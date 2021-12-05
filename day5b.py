@@ -20,12 +20,12 @@ def main(coords: t.List[t.Tuple[int]], xmax: int, ymax: int) -> str:
             matrix[_b:_z+1, _x] += 1
         elif b == z:
             matrix[_b ,_a:_x+1] += 1
-        elif abs(x-a) == abs(z-b) and x-a != 0:            
+        elif abs(x-a) == abs(z-b) and x-a != 0: # arctan          
             _a, _b = a, b
             for step in range(abs(x-a) + 1):                       
                 matrix[_b, _a] += 1
-                _a += 1 if x-a > 0 else -1
-                _b += 1 if z-b > 0 else -1
+                _a += np.sign(x-a)
+                _b += np.sign(z-b)
                
         
     # matrix_str = preety_format(matrix)
