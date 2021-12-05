@@ -14,20 +14,12 @@ def preety_format(matrix):
 def main(coords: t.List[t.Tuple[int]], xmax: int, ymax: int) -> str:
     matrix = np.zeros([xmax+1, ymax]).astype(np.int)
     for a, b, x, z in coords:
-        _a, _x = min(a, x), max(a, x)
-        _b, _z = min(b, z), max(b, z)        
+        a, x = min(a, x), max(a, x)
+        b, z = min(b, z), max(b, z)        
         if a == x:
-            matrix[_b:_z+1, _x] += 1
+            matrix[b:z+1, x] += 1
         elif b == z:
-            matrix[_b ,_a:_x+1] += 1
-        elif abs(x-a) == abs(z-b) and x-a != 0:            
-            _a, _b = a, b
-            for step in range(abs(x-a) + 1):                       
-                matrix[_b, _a] += 1
-                _a += 1 if x-a > 0 else -1
-                _b += 1 if z-b > 0 else -1
-               
-        
+            matrix[b ,a:x+1] += 1                        
     # matrix_str = preety_format(matrix)
     # print(matrix_str)
     return len(matrix[matrix>=2])
