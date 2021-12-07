@@ -2,10 +2,10 @@ import typing as t
 import sys
 import os
 import numpy as np 
+from benchmark import benchmark
 
-# no moar bruteforce ;)
-def main(data: np.array) -> int:            
-    return min(np.absolute(data-val).sum() for val in data)
+def main(data: np.array) -> int:      
+    return np.absolute(data-np.median(data)).sum() 
 
 if __name__ == "__main__":
     if '--test' in sys.argv:
@@ -15,5 +15,5 @@ if __name__ == "__main__":
             data = f.read()
     
     arr = np.array(data.split(','), np.int)
-
-    print(main(arr))
+    with benchmark():
+        print(main(arr))
