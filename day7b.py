@@ -5,6 +5,7 @@ import numpy as np
 from benchmark import benchmark
 
 # vectorization FTW
+
 vfuel = np.vectorize(lambda distance: int((1 + distance) / 2 * distance)) 
 
 def main(data: np.array) -> int:  
@@ -18,6 +19,6 @@ if __name__ == "__main__":
         with open('data7a.txt') as f:
             data = f.read()
     
-    arr = np.array(data.split(','), np.int)
+    arr = np.array(data.split(','), int)
     with benchmark():
         print(main(arr))

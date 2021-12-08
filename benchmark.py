@@ -5,5 +5,5 @@ import time
 def benchmark():        
     start = time.perf_counter()
     yield          
-    print(f"Execution itme {(time.perf_counter() - start):.4}sec")
+    print(f"Execution itme {(time.perf_counter() - start):.6}sec")
     
