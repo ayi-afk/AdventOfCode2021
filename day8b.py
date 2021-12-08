@@ -4,46 +4,47 @@ import os
 import numpy as np 
 from benchmark import benchmark
 
-
-def solve_one(signal, output):
-    segments = dict()
+def solve_one(signal: t.List[str], output: t.List[str]):
     _960 = [set(it) for it in signal if len(it) == 6] 
     # ^ there was also _532 but it seems it was not nescecary    
     known = {
         a: set(next(it for it in signal if len(it) == b))
         for a, b in [(1, 2), (4, 4), (7, 3),  (8, 7)]
     }
-    segments['a'] = known[7] - known[1]
+    a,b,c,d,e,f,g = [None] * 7 # e, f, b, d are optional but let's keep'em
+    a = known[7] - known[1]
     for it in _960:
         if len(it | known[1]) == 7:
             known[6] = it
-            segments['c'] = known[8] - known[6]
-            segments['f'] = known[1] - segments['c']
+            c = known[8] - known[6]
+            f = known[1] - c
+            break
     eg = known[8] - known[4] - known[7]
     for it in _960:
         if eg | it == known[8]:
             known[9] = it
-            segments['e'] = eg - known[9]
+            e = eg - known[9]
+            g = eg - e
+            break
     for it in _960:
         if not (it == known[9] or it == known[6]):
             known[0] = it        
-    segments['d'] = known[8] - known[0]
-    
-    segments['b'] = known[4] - known[1] - segments['d']
-    known[2] = known[8] - segments['b'] - segments['f']        
-    # known a,b,c,d,e,f  0,1,2,4,6,7,8 - was moving this comment down while deving
-    known[3] = (known[2] - segments['e']) | segments['f']
-    known[9] = known[8] - segments['e']
-    known[5] = known[6] - segments['e']
+            break
+    d = known[8] - known[0]    
+    b = known[4] - known[1] - d
+    known[2] = known[8] - b - f       
+    known[3] = (known[2] - e) | f
+    known[9] = known[8] - e
+    known[5] = known[6] - e
 
-    number = ""
+    digits = []
     for out in output:
-        number += str(list(known.keys())[list(known.values()).index(set(list(out)))])
+        digits.append(str(list(known.keys())[list(known.values()).index(set(list(out)))]))
 
-    return int(number)
+    return int("".join(digits))
 
 
-def main(signals: t.List[str], outputs: t.List[str]) -> int:    
+def main(signals: t.List[t.List[str]], outputs: t.List[t.List[str]]) -> int:    
     return sum(solve_one(*args) for args in zip(signals, outputs))
     
 
