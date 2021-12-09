@@ -3,6 +3,7 @@ import sys
 import os
 import numpy as np 
 from benchmark import benchmark
+import timeit
 
 def solve_one(signal: t.List[str], output: t.List[str]):
     _960 = [set(it) for it in signal if len(it) == 6] 
@@ -73,5 +74,6 @@ if __name__ == "__main__":
         signals.append(a.split(' '))
         outputs.append(b.split(' '))
     
+    print(timeit.timeit(lambda:main(signals, outputs), number=100)/100)
     with benchmark():
         print(main(signals, outputs))
