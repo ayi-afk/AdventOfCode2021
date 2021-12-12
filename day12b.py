@@ -19,7 +19,7 @@ class Node:
     def __repr__(self) -> str:                
         return f"{self.name}"
 
-paths = []
+paths = [] # nasty i know
 def check(node:t.List['Node'], visited: set, path: t.List['Node'], already_visited_twice):
     if node.is_small_cave:
         if node.name in visited:
@@ -30,6 +30,7 @@ def check(node:t.List['Node'], visited: set, path: t.List['Node'], already_visit
         return paths.append(path)
         
     for n in node.nodes:
+        #comparing it by name not by object makes that 2x faster
         if n.name != 'start' and (n.name not in visited or not already_visited_twice):            
             check(n, visited.copy(), path.copy(), already_visited_twice)
 
