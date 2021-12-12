@@ -4,10 +4,25 @@ import os
 import numpy as np 
 from functools import partial
 from benchmark import benchmark
-from numba import njit
+from numba import njit, int64
 import timeit
 
-def main(data: np.array, num_steps: int) -> int:       
+import cv2
+
+
+numbah = 0
+def to_image(data: np.array, delta: int=50):
+    global numbah
+    
+    my_data = data / 9 * 256  
+    w, h = data.shape
+    im = cv2.resize(my_data, dsize=(w*delta, h*delta), interpolation=None).astype('uint8')
+    cv2.imwrite(f"ims/frame{str(numbah).rjust(4, '0')}.png", im)
+    
+    numbah += 1
+
+
+def main(data: np.array) -> int:       
     w, h = data.shape    
     step = 0
     while data.sum() != 0:        
@@ -20,7 +35,7 @@ def main(data: np.array, num_steps: int) -> int:
                 data[max(0, y-1): min(w, y+1)+1, max(0, x-1): min(h, x+1)+1] += 1                
             for x, y in blown:
                 data[y, x] = 0            
-        
+        # to_image(data)
     return step
 
 if __name__ == "__main__":
@@ -45,4 +60,5 @@ if __name__ == "__main__":
     
     # print(timeit.timeit(lambda:main(data), number=100)/100)
     with benchmark():
-        print(main(data, 100))
+        print(main(data))    
+    
