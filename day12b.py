@@ -19,23 +19,27 @@ class Node:
     def __repr__(self) -> str:                
         return f"{self.name}"
 
-paths = [] # nasty i know
-def check(node:t.List['Node'], visited: set, path: t.List['Node'], already_visited_twice):
+ 
+def check(node:t.List[Node], visited: set, path: t.List[Node], already_visited_twice, out_paths: t.List[Node]):
+    """
+    all available paths are appened to out_paths var
+    """
     if node.is_small_cave:
         if node.name in visited:
             already_visited_twice = True
         visited.add(node.name)
     path.append(node)
     if node.name == 'end':               
-        return paths.append(path)
+        return out_paths.append(path)
         
     for n in node.nodes:
         #comparing it by name not by object makes that 2x faster
         if n.name != 'start' and (n.name not in visited or not already_visited_twice):            
-            check(n, visited.copy(), path.copy(), already_visited_twice)
+            check(n, visited.copy(), path.copy(), already_visited_twice, out_paths)
 
 def main(nodes: t.List['Node'], start: Node) -> int:                   
-    check(start, set(), list(), False)        
+    paths = []
+    check(start, set(), list(), False, paths)        
     return len(paths)
 
 if __name__ == "__main__":
