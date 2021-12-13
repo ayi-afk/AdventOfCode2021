@@ -1,14 +1,9 @@
 import typing as t
 import sys
-import os
 import numpy as np 
-from functools import cached_property, partial
 from benchmark import benchmark
-from numba import njit
-import timeit
-from dataclasses import dataclass, field
-from PIL import Image, ImageDraw, ImageOps
-import pytesseract
+from PIL import Image, ImageDraw
+
 
 def pretty_print(cords): # a bit fun
     xmax, ymax = 0, 0
@@ -27,11 +22,39 @@ def pretty_print(cords): # a bit fun
     print("|")
 
 
+def extract_ascii(cords:t.Set[t.Tuple[int, int]]) -> str:
+    import pytesseract
+    "super lazy as it took just 3 mins as was talking with friend hmm what if ..."
+    size = 2 # not less than 2
+    img = Image.new("RGB", (8*size*5+20, 20+6*size), color=(255,255,255))    
+    img1 = ImageDraw.Draw(img) 
+    for x,y in cords:        
+         x, y = x*size+5, y*size+5
+         img1.rectangle((x, y, x+size, y+size), fill="#000000")        
+    text = pytesseract.image_to_string(img)
+    if '\n' in text:
+        return text.split('\n')[0]
+    return text    
+
+## SOME ALTERNATIVE ONE FOR FUN but 25% slower 
+# def main(cords: t.Set[t.Tuple[int, int]], folds: t.List[t.Tuple[str, int]]) -> None:       
+#     for axis, fold_val in folds:  
+#         new_cords = set()    
+#         for x, y in cords:                        
+#             yless, xless = y < fold_val, x < fold_val            
+#             aisx = axis == 'x'
+#             aisy = not aisx 
+#             y = (y * yless + (2*fold_val - y) * (not yless)) * aisy + y * aisx
+#             x = (x * xless + (2*fold_val - x) * (not xless)) * aisx + x * aisy
+#             new_cords.add((x, y))
+#         cords = new_cords
+#     pretty_print(cords)
+
 def main(cords: t.Set[t.Tuple[int, int]], folds: t.List[t.Tuple[str, int]]) -> None:       
     for axis, fold_val in folds:  
         new_cords = set()    
-        for x, y in cords:
-            if axis == 'y':
+        for x, y in cords:            
+            if axis == 'y':            
                 if y < fold_val:
                     new_cords.add((x, y))
                 else:
@@ -44,16 +67,9 @@ def main(cords: t.Set[t.Tuple[int, int]], folds: t.List[t.Tuple[str, int]]) -> N
         cords = new_cords
 
     # this is just POC written in 3 mins create it as image then use tesseract to OCR it :D
-    # size = 2
-    # img = Image.new("RGB", (8*size*5+20, 20+6*size))
     
-    # img1 = ImageDraw.Draw(img) 
-    # for x,y in cords:        
-    #     x, y = x*size+10, y*size+10
-    #     img1.rectangle((x, y, x+size, y+size), fill="#ffffff")
-    # img = ImageOps.invert(img)    
-    # print(pytesseract.image_to_string(img))
     pretty_print(cords)
+    print(extract_ascii(cords))
         
 
 if __name__ == "__main__":
