@@ -3,7 +3,7 @@ import sys
 import os
 import numpy as np 
 from functools import cached_property, partial
-from benchmark import benchmark
+from benchmark import benchmark, memory
 from collections import defaultdict
 from dataclasses import dataclass, field
 
@@ -30,15 +30,14 @@ def check(node:t.List[Node], visited: set, path: t.List[Node], already_visited_t
         visited.add(node.name)
     path.append(node)
     if node.name == 'end':               
-        return out_paths.append(path)
-        
+        return out_paths.append(path)    
     for n in node.nodes:
         #comparing it by name not by object makes that 2x faster
         if n.name != 'start' and (n.name not in visited or not already_visited_twice):            
             check(n, visited.copy(), path.copy(), already_visited_twice, out_paths)
 
-def main(nodes: t.List['Node'], start: Node) -> int:                   
-    paths = []
+def main(start: Node) -> int:                   
+    paths = []    
     check(start, set(), list(), False, paths)        
     return len(paths)
 
@@ -79,5 +78,8 @@ if __name__ == "__main__":
         raise Exception("No start defined")      
     
     # print(timeit.timeit(lambda:main(data), number=100)/100)
-    with benchmark():
-        print(main(nodes, start))
+    with benchmark():                
+        print(main(start))    
+
+    with memory():
+        main(start)
