@@ -6,7 +6,9 @@ from functools import partial
 from benchmark import benchmark
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
+
+from pathfinding.finder.dijkstra import DijkstraFinder as Finder
+
 
 
 def main(data: np.array) -> int:  
@@ -14,10 +16,8 @@ def main(data: np.array) -> int:
     # but i mande so many pathfinding stuff in my entire live ...
     w, h = data.shape
     grid = Grid(matrix=data)        
-    start = grid.node(0, 0)
-    end = grid.node(w-1, h-1)
-    
-    finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+    start, end = grid.node(0, 0), grid.node(w-1, h-1)    
+    finder = Finder()
     path, runs = finder.find_path(start, end, grid)
     print(grid.grid_str(path=path, start=start, end=end))
     return sum(data[y,x] for x, y in path) - data[0, 0]

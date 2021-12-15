@@ -6,13 +6,12 @@ from functools import partial
 from benchmark import benchmark
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
-from pathfinding.finder.a_star import AStarFinder
+from pathfinding.finder.dijkstra import DijkstraFinder as Finder
 import utils
 
 
 def main(data: np.array) -> int:      
-    # i know it's a bit cheating
-    # but i mande so many pathfinding stuff in my entire live ...    
+    # it takes like 15 sec on my pc :D but as one can see it's quite lazy solution        
     
     new_data = data.copy()
     tmp = data.copy()    
@@ -28,10 +27,9 @@ def main(data: np.array) -> int:
 
     w, h = new_data.shape
     grid = Grid(matrix=new_data)        
-    start = grid.node(0, 0)
-    end = grid.node(w-1, h-1)
+    start, end = grid.node(0, 0), grid.node(w-1, h-1)    
     
-    finder = AStarFinder(diagonal_movement=DiagonalMovement.never)
+    finder = Finder()
     path, runs = finder.find_path(start, end, grid)
     # print(grid.grid_str(path=path, start=start, end=end))
     return sum(new_data[y,x] for x, y in path) - new_data[0, 0]
