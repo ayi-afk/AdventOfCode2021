@@ -23,8 +23,7 @@ def main(data: np.array) -> int:
     for y in range(1, 5):
         tmp = (tmp + 1) % 10
         tmp[tmp==0] = 1
-        new_data = np.vstack((new_data, tmp))    
-
+        new_data = np.vstack((new_data, tmp))        
     w, h = new_data.shape
     grid = Grid(matrix=new_data)        
     start, end = grid.node(0, 0), grid.node(w-1, h-1)    
