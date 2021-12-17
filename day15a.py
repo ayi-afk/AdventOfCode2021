@@ -6,7 +6,6 @@ from functools import partial
 from benchmark import benchmark
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
-
 from pathfinding.finder.dijkstra import DijkstraFinder as Finder
 
 

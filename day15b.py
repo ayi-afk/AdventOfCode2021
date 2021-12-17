@@ -1,13 +1,10 @@
 import typing as t
 import sys
-import os
 import numpy as np 
-from functools import partial
 from benchmark import benchmark
 from pathfinding.core.diagonal_movement import DiagonalMovement
 from pathfinding.core.grid import Grid
 from pathfinding.finder.dijkstra import DijkstraFinder as Finder
-import utils
 
 
 def main(data: np.array) -> int:      
@@ -23,14 +20,14 @@ def main(data: np.array) -> int:
     for y in range(1, 5):
         tmp = (tmp + 1) % 10
         tmp[tmp==0] = 1
-        new_data = np.vstack((new_data, tmp))        
+        new_data = np.vstack((new_data, tmp))    
+
     w, h = new_data.shape
     grid = Grid(matrix=new_data)        
     start, end = grid.node(0, 0), grid.node(w-1, h-1)    
-    
     finder = Finder()
     path, runs = finder.find_path(start, end, grid)
-    # print(grid.grid_str(path=path, start=start, end=end))
+    print(grid.grid_str(path=path, start=start, end=end))
     return sum(new_data[y,x] for x, y in path) - new_data[0, 0]
     
 
